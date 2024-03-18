@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="APP" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.komar.Program" />
+    <module name="jdk-1-hw" />
+    <option name="VM_PARAMETERS" value="-Dconsole.encoding=UTF-8" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
