@@ -1,12 +1,14 @@
 package org.komar.client;
 
+import org.komar.server.ServerController;
+
 public class ClientController {
     private boolean connected;
     private String name;
     private ClientView clientView;
     private ServerController server;
 
-    //сеттеры
+    //СЃРµС‚С‚РµСЂС‹
     public void setClientView(ClientView clientView) {
         this.clientView = clientView;
     }
@@ -16,14 +18,14 @@ public class ClientController {
     }
 
     /**
-     * Метод попытки подключения к серверу. Вызывается из GUI
-     * @param name имя пользователя, которым будем подписывать исходящие сообщения
-     * @return ответ от сервера. true, если прошли авторизацию
+     * РњРµС‚РѕРґ РїРѕРїС‹С‚РєРё РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµСЂРІРµСЂСѓ. Р’С‹Р·С‹РІР°РµС‚СЃСЏ РёР· GUI
+     * @param name РёРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ, РєРѕС‚РѕСЂС‹Рј Р±СѓРґРµРј РїРѕРґРїРёСЃС‹РІР°С‚СЊ РёСЃС…РѕРґСЏС‰РёРµ СЃРѕРѕР±С‰РµРЅРёСЏ
+     * @return РѕС‚РІРµС‚ РѕС‚ СЃРµСЂРІРµСЂР°. true, РµСЃР»Рё РїСЂРѕС€Р»Рё Р°РІС‚РѕСЂРёР·Р°С†РёСЋ
      */
-    public boolean connectToServer(String name) {
+    public boolean connectToServer(String name, ClientGUI clientGUI) {
         this.name = name;
-        if (server.connectUser(this)){
-            showOnWindow("Вы успешно подключились!\n");
+        if (server.connectUser(clientGUI)){
+            showOnWindow("Р’С‹ СѓСЃРїРµС€РЅРѕ РїРѕРґРєР»СЋС‡РёР»РёСЃСЊ!\n");
             connected = true;
             String log = server.getHistory();
             if (log != null){
@@ -31,40 +33,40 @@ public class ClientController {
             }
             return true;
         } else {
-            showOnWindow("Подключение не удалось");
+            showOnWindow("РџРѕРґРєР»СЋС‡РµРЅРёРµ РЅРµ СѓРґР°Р»РѕСЃСЊ");
             return false;
         }
     }
 
     /**
-     * Метод отключения от сервера инициализированное сервером
+     * РњРµС‚РѕРґ РѕС‚РєР»СЋС‡РµРЅРёСЏ РѕС‚ СЃРµСЂРІРµСЂР° РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРЅРѕРµ СЃРµСЂРІРµСЂРѕРј
      */
     public void disconnectedFromServer() {
         if (connected) {
             connected = false;
             clientView.disconnectedFromServer();
-            showOnWindow("Вы были отключены от сервера!");
+            showOnWindow("Р’С‹ Р±С‹Р»Рё РѕС‚РєР»СЋС‡РµРЅС‹ РѕС‚ СЃРµСЂРІРµСЂР°!");
         }
     }
 
     /**
-     * Метод отключения от сервера инициализированное клиентом (например закрыто GUI)
+     * РњРµС‚РѕРґ РѕС‚РєР»СЋС‡РµРЅРёСЏ РѕС‚ СЃРµСЂРІРµСЂР° РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅРЅРѕРµ РєР»РёРµРЅС‚РѕРј (РЅР°РїСЂРёРјРµСЂ Р·Р°РєСЂС‹С‚Рѕ GUI)
      */
     public void disconnectFromServer() {
         server.disconnectUser(this);
     }
 
     /**
-     * Метод, с помощью которого сервер передает клиенту сообщения
-     * @param text текст переданный от сервера
+     * РњРµС‚РѕРґ, СЃ РїРѕРјРѕС‰СЊСЋ РєРѕС‚РѕСЂРѕРіРѕ СЃРµСЂРІРµСЂ РїРµСЂРµРґР°РµС‚ РєР»РёРµРЅС‚Сѓ СЃРѕРѕР±С‰РµРЅРёСЏ
+     * @param text С‚РµРєСЃС‚ РїРµСЂРµРґР°РЅРЅС‹Р№ РѕС‚ СЃРµСЂРІРµСЂР°
      */
     public void answerFromServer(String text) {
         showOnWindow(text);
     }
 
     /**
-     * Метод для передачи сообщения на сервер
-     * @param text текст передаваемого сообщения
+     * РњРµС‚РѕРґ РґР»СЏ РїРµСЂРµРґР°С‡Рё СЃРѕРѕР±С‰РµРЅРёСЏ РЅР° СЃРµСЂРІРµСЂ
+     * @param text С‚РµРєСЃС‚ РїРµСЂРµРґР°РІР°РµРјРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
      */
     public void message(String text) {
         if (connected) {
@@ -72,15 +74,17 @@ public class ClientController {
                 server.message(name + ": " + text);
             }
         } else {
-            showOnWindow("Нет подключения к серверу");
+            showOnWindow("РќРµС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµСЂРІРµСЂСѓ");
         }
     }
 
     /**
-     * Метод вывода сообщения на GUI
-     * @param text текст, который требуется вывести на экран
+     * РњРµС‚РѕРґ РІС‹РІРѕРґР° СЃРѕРѕР±С‰РµРЅРёСЏ РЅР° GUI
+     * @param text С‚РµРєСЃС‚, РєРѕС‚РѕСЂС‹Р№ С‚СЂРµР±СѓРµС‚СЃСЏ РІС‹РІРµСЃС‚Рё РЅР° СЌРєСЂР°РЅ
      */
     private void showOnWindow(String text) {
         clientView.showMessage(text);
     }
+
+
 }
